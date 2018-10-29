@@ -1,7 +1,7 @@
 <template>
     <div class='wrapper'>
         <div id="pop_star" ref='table'>
-            <div id="target_score">目标分数：{{targetScore}}</div>
+            <div id="target_score">获胜分数：{{targetScore}}</div>
             <div id="now_score">当前分数：{{totalScore}}</div>
             <div id="select_score" ref='selecScore'></div>
         </div>
@@ -27,11 +27,10 @@
                 targetScore: 2000,
                 totalScore: 0,
                 flag: true,
-                tempSquire: null //处理鼠标动作过程中，动作被屏蔽，导致事件处理完成，有不连贯现象
+                tempSquire: null
             }
         },
         mounted() {
-            //初始化星星 外层是行 内层是列
             let table = this.$refs['table']
             for (let i = 0; i < this.columnNum; i++) {
                 this.squireArr[i] = new Array();
@@ -52,6 +51,7 @@
             this.refresh();
         },
         methods: {
+            //创建星星函数
             createSquire(color, row, column) {
                 let squire = document.createElement('div');
                 squire.row = row;
@@ -66,6 +66,7 @@
                 return squire
             },
             refresh() {
+                //渲染星星函数
                 for (let i = 0; i < this.squireArr.length; i++) {
                     for (let j = 0; j < this.squireArr[i].length; j++) {
                         if (this.squireArr[i][j] == null) {
@@ -84,6 +85,7 @@
                 }
             },
             mouseover(start) {
+                //鼠标移入星星事件
                 if (!this.flag) {
                     this.tempSquire = start
                     return
@@ -99,12 +101,12 @@
                 this.selectScore()
             },
             startClick() {
+                //点击消灭星星
                 if (!this.flag || this.choose.length == 0) {
                     return
                 }
                 this.flag = false;
                 this.tempSquire = null;
-                //计算总分
                 let score = 0;
                 for (let i = 0; i < this.choose.length; i++) {
                     score += this.baseScore + i * this.stepScore
@@ -123,7 +125,6 @@
                 //移动并且判断是否结束
                 setTimeout(() => {
                     _this.move()
-                    //判断游戏是否结束
                     setTimeout(() => {
                         let is = _this.isFinsh();
                         if (is) {
@@ -158,17 +159,13 @@
                 }
             },
             checkLinked(start, arr) {
+                //计算相连星星数组
                 if (start == null) {
                     return
                 }
                 arr.push(start)
                 //判断左边的小方块需不需要被收录进来  其他同理
-                /*
-                * 1.不能是最左边的
-                * 2.左边得存在一个小块
-                * 3.左边的小方块和当前的小方块颜色相同
-                * 4.左边的小方块没有被收录进数组
-                */
+                // 不能在第1列 && 当前星星左边存在星星 && 当前星星和左边星星颜色一致 && 当前星星不在选中数组中
                 if (start.column > 0 && this.squireArr[start.row][start.column - 1] && start.color == this.squireArr[start.row][start.column - 1].color && arr.indexOf(this.squireArr[start.row][start.column - 1]) == -1) {
                     this.checkLinked(this.squireArr[start.row][start.column - 1], arr)
                 }
@@ -183,7 +180,7 @@
                 }
             },
             flicker(arr) {
-                //一闪一闪的效果
+                //闪烁效果
                 let num = 0;
                 this.timer = setInterval(() => {
                     for (let i = 0; i < arr.length; i++) {
@@ -213,10 +210,9 @@
                 }, 1000);
             },
             move() {
-                //注意 每一行是一个数组 每一列不是一个数组
                 //纵向移动
                 for (var i = 0; i < this.rowNum; i++) {
-                    var pointer = 0;//pointer指向小方块，当遇到null的时候停止，等待上面的小方块落到这里来
+                    var pointer = 0;       //pointer指向小方块，当遇到null的时候停止
                     for (var j = 0; j < this.columnNum; j++) {
                         if (this.squireArr[j][i] != null) {
                             if (j != pointer) {
