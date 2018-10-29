@@ -164,7 +164,7 @@
                     return
                 }
                 arr.push(start)
-                //判断左边的小方块需不需要被收录进来  其他同理
+                // 判断左边的小方块需不需要被收录进来  其他同理
                 // 不能在第1列 && 当前星星左边存在星星 && 当前星星和左边星星颜色一致 && 当前星星不在选中数组中
                 if (start.column > 0 && this.squireArr[start.row][start.column - 1] && start.color == this.squireArr[start.row][start.column - 1].color && arr.indexOf(this.squireArr[start.row][start.column - 1]) == -1) {
                     this.checkLinked(this.squireArr[start.row][start.column - 1], arr)
